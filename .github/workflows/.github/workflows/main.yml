@@ -1,0 +1,30 @@
+name: "Daily Telegram Alert"
+
+on:
+  schedule:
+    # รันอัตโนมัติทุกวันเวลา 20:00 น. ตามเวลาไทย
+    - cron: '0 13 * * *'
+  
+  # 🟢 เพิ่มบรรทัดนี้เข้าไป เพื่อให้กดรันเองตอนไหนก็ได้
+  workflow_dispatch: 
+
+jobs:
+  python-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run python script
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python script.py
